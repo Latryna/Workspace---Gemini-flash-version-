@@ -1,0 +1,5 @@
+{
+  "name": "TITANS AI Workspace",
+  "description": "A collaborative web-based workspace for human and AI developers to interact with multiple AI models like Gemini, Claude, and local models via LM Studio. This unified interface facilitates research and development in advanced AGI architectures.",
+  "requestFramePermissions": []
+}
