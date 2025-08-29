@@ -1,11 +1,7 @@
 import type { ChatMessage } from '../types';
 import { MessageAuthor } from '../types';
 
-if (!process.env.OPENROUTER_API_KEY) {
-  console.warn("OPENROUTER_API_KEY environment variable not set. OpenRouter API calls will fail.");
-}
-
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const API_URL = 'http://localhost:1234/v1/chat/completions';
 
 export async function* streamChatResponse(
   prompt: string,
@@ -13,10 +9,6 @@ export async function* streamChatResponse(
   modelId: string
 ): AsyncGenerator<string, void, undefined> {
   try {
-    if (!process.env.OPENROUTER_API_KEY) {
-      throw new Error("OpenRouter API key is not configured.");
-    }
-    
     const messages = history
       .filter(msg => msg.content)
       .map(msg => ({
@@ -28,25 +20,29 @@ export async function* streamChatResponse(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://titans-workspace.ai', // Optional: for OpenRouter analytics
-        'X-Title': 'TITANS AI Workspace', // Optional: for OpenRouter analytics
       },
       body: JSON.stringify({
         model: modelId,
         messages: messages,
         stream: true,
+        // LM Studio specific parameters can be added here if needed
+        // e.g., temperature: 0.7
       }),
     });
 
     if (!response.ok) {
-      const errorBody = await response.text();
-      throw new Error(`API request failed: ${response.status} ${response.statusText} - ${errorBody}`);
+        let errorBody = 'Could not read error body.';
+        try {
+            errorBody = await response.text();
+        } catch (e) {
+            // ignore
+        }
+      throw new Error(`LM Studio API request failed: ${response.status} ${response.statusText}. Is the server running at ${API_URL}? Details: ${errorBody}`);
     }
 
     const reader = response.body?.getReader();
     if (!reader) {
-      throw new Error("Failed to get response reader.");
+      throw new Error("Failed to get response reader from LM Studio server.");
     }
 
     const decoder = new TextDecoder();
@@ -61,7 +57,7 @@ export async function* streamChatResponse(
       buffer += decoder.decode(value, { stream: true });
       
       const lines = buffer.split('\n');
-      buffer = lines.pop() || ''; // Keep the last, potentially incomplete line
+      buffer = lines.pop() || '';
 
       for (const line of lines) {
         if (line.startsWith('data: ')) {
@@ -76,13 +72,13 @@ export async function* streamChatResponse(
               yield content;
             }
           } catch (e) {
-            console.error('Failed to parse stream chunk:', jsonStr);
+            console.warn('Failed to parse stream chunk from LM Studio:', jsonStr);
           }
         }
       }
     }
   } catch (error) {
-    console.error('OpenRouter API Error:', error);
-    yield `Error: Could not retrieve response from OpenRouter. Details: ${error instanceof Error ? error.message : String(error)}`;
+    console.error('LM Studio Service Error:', error);
+    yield `Error: Could not retrieve response from local LM Studio server. Please ensure it is running and accessible. Details: ${error instanceof Error ? error.message : String(error)}`;
   }
 }

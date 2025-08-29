@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import type { AIModel } from '../types';
 import { MODELS } from '../constants';
@@ -37,7 +36,7 @@ const InfoTab: React.FC<{ model: AIModel }> = ({ model }) => (
                             The local server is reachable at this address
                         </p>
                         <div className="flex items-center justify-between bg-slate-900 p-2 rounded-md">
-                            <span className="font-mono text-indigo-400">http://192.168.0.106:5005</span>
+                            <span className="font-mono text-indigo-400">http://localhost:1234</span>
                              <button className="text-gray-400 hover:text-white"><CopyIcon /></button>
                         </div>
                     </>

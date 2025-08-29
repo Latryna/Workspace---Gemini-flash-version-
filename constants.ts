@@ -1,5 +1,5 @@
-
 import type { AIModel } from './types';
+import { TitansLogoIcon, OpenAIIcon, AnthropicIcon, MicrosoftCopilotIcon, DeepSeekIcon, LMStudioIcon } from './components/icons/Icons';
 
 export const MODELS: AIModel[] = [
   {
@@ -8,6 +8,7 @@ export const MODELS: AIModel[] = [
     provider: 'Gemini',
     description: 'Google\'s fast and efficient multimodal model.',
     isLocal: false,
+    providerIcon: TitansLogoIcon,
   },
   {
     id: 'mistral-8x7b-instruct-v0.1',
@@ -20,6 +21,7 @@ export const MODELS: AIModel[] = [
     arch: 'llama',
     size: '33.23 GB',
     isLocal: true,
+    providerIcon: LMStudioIcon,
   },
   {
     id: 'gpt-4o',
@@ -27,6 +29,8 @@ export const MODELS: AIModel[] = [
     provider: 'OpenAI',
     description: 'OpenAI\'s latest flagship model, "omni" capable.',
     isLocal: false,
+    providerIcon: OpenAIIcon,
+    openRouterId: 'openai/gpt-4o',
   },
   {
     id: 'claude-3-opus',
@@ -34,6 +38,8 @@ export const MODELS: AIModel[] = [
     provider: 'Anthropic',
     description: 'Anthropic\'s most powerful model for complex tasks.',
     isLocal: false,
+    providerIcon: AnthropicIcon,
+    openRouterId: 'anthropic/claude-3-opus',
   },
   {
     id: 'copilot',
@@ -41,6 +47,8 @@ export const MODELS: AIModel[] = [
     provider: 'Microsoft',
     description: 'Microsoft\'s AI assistant, integrated across its ecosystem.',
     isLocal: false,
+    providerIcon: MicrosoftCopilotIcon,
+    openRouterId: 'microsoft/copilot', // Note: Fictional ID for demonstration
   },
   {
     id: 'deepseek-coder',
@@ -48,5 +56,15 @@ export const MODELS: AIModel[] = [
     provider: 'DeepSeek',
     description: 'Specialized model for code generation and understanding.',
     isLocal: false,
-  }
+    providerIcon: DeepSeekIcon,
+    openRouterId: 'deepseek/deepseek-coder',
+  },
+  {
+    id: 'repo-agent',
+    name: 'Repo Agent',
+    provider: 'OpenAI',
+    description: 'Specialist for interacting with the `Latryna/titans-legal-docs` repository.',
+    isLocal: false,
+    providerIcon: OpenAIIcon,
+  },
 ];

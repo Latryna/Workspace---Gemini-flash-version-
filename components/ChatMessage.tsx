@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { ChatMessage } from '../types';
 import { MessageAuthor } from '../types';
@@ -10,12 +9,20 @@ interface ChatMessageProps {
 
 const ChatMessageComponent: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.author === MessageAuthor.USER;
+  const ProviderIcon = message.model?.providerIcon;
 
   return (
     <div className={`flex items-start gap-4 ${isUser ? 'justify-end' : ''}`}>
       {!isUser && (
-        <div className="w-8 h-8 flex-shrink-0 bg-indigo-600 rounded-full flex items-center justify-center">
-          <TitansLogoIcon className="w-5 h-5" />
+        <div className="relative w-8 h-8 flex-shrink-0">
+          <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+            <TitansLogoIcon className="w-5 h-5" />
+          </div>
+           {ProviderIcon && (
+            <div className="absolute -bottom-1 -right-1 bg-slate-900 p-0.5 rounded-full border border-slate-700">
+                <ProviderIcon className="w-4 h-4 text-white" />
+            </div>
+          )}
         </div>
       )}
       <div className={`max-w-xl p-3 rounded-lg ${

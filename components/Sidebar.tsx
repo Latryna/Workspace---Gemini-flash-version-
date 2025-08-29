@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TitansLogoIcon, ChatIcon, SearchIcon, FolderIcon, LegalIcon, SettingsIcon } from './icons/Icons';
+import { TitansLogoIcon, ChatIcon, SearchIcon, FolderIcon, LegalIcon, SettingsIcon, TeamIcon } from './icons/Icons';
 
 interface SidebarProps {
   activeView: string;
@@ -10,6 +10,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView }) => {
   const navItems = [
     { view: 'chat', icon: <ChatIcon />, label: 'Chat' },
+    { view: 'team', icon: <TeamIcon />, label: 'Team Workspace' },
     { view: 'search', icon: <SearchIcon />, label: 'Search' },
     { view: 'files', icon: <FolderIcon />, label: 'Files' },
     { view: 'legal', icon: <LegalIcon />, label: 'Legal Docs' },

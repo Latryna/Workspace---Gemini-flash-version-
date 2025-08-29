@@ -1,10 +1,9 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { AIModel, ChatMessage } from '../types';
 import { MessageAuthor } from '../types';
 import ChatMessageComponent from './ChatMessage';
 import { SendIcon, CopyIcon, CodeIcon, ChevronDownIcon } from './icons/Icons';
-import { streamChatResponse } from '../services/geminiService';
+import { routeRequest } from '../services/titansService';
 
 interface MainPanelProps {
   selectedModel: AIModel;
@@ -45,16 +44,18 @@ const MainPanel: React.FC<MainPanelProps> = ({ selectedModel }) => {
     setInput('');
     setIsLoading(true);
 
+    const { stream, model: finalModel } = routeRequest(input, newMessages, selectedModel);
+
     const aiMessagePlaceholder: ChatMessage = {
         author: MessageAuthor.AI,
         content: '▋',
         timestamp: new Date().toLocaleTimeString(),
+        model: finalModel,
     };
     setMessages(prev => [...prev, aiMessagePlaceholder]);
 
     let fullResponse = '';
     try {
-        const stream = streamChatResponse(input, newMessages, selectedModel.id);
         for await (const chunk of stream) {
             fullResponse += chunk;
             setMessages(prev => {
@@ -69,7 +70,9 @@ const MainPanel: React.FC<MainPanelProps> = ({ selectedModel }) => {
         setIsLoading(false);
         setMessages(prev => {
             const finalMessages = [...prev];
-            finalMessages[finalMessages.length - 1].content = fullResponse;
+            if (finalMessages.length > 0) {
+              finalMessages[finalMessages.length - 1].content = fullResponse;
+            }
             return finalMessages;
         });
     }
@@ -105,7 +108,7 @@ const MainPanel: React.FC<MainPanelProps> = ({ selectedModel }) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder={`Message ${selectedModel.name}...`}
+                placeholder={`Message ${selectedModel.name}... (e.g., [LOCAL] list files)`}
                 className="flex-1 bg-transparent p-2 focus:outline-none resize-none"
                 rows={1}
                 disabled={isLoading}
